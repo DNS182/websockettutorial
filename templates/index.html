@@ -14,13 +14,13 @@
     <button type="submit" id="chat-msg-submit">SUBMIT</button>
 
 <script>
-    var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/');
+    var ws = new WebSocket('ws://127.0.0.1:8000/ws/ac/');
 
     ws.onopen = function(){
         console.log("Websocket Connected...")
     }
 
-    //  ws.send vaneko Backend ma thow garxa
+    //  ws.send vaneko Backend ma throw garxa
 
     ws.onmessage = function(event){
         console.log(event.data)

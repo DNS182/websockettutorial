@@ -68,19 +68,37 @@ class MySyncConsumer(SyncConsumer):
 class MyAsyncConsumer(AsyncConsumer):
     
     async def websocket_connect(self,event):
+        await self.channel_layer.group_add(
+            'pro' , #group ko name
+            self.channel_name
+            )
         await self.send({
             'type': 'websocket.accept'
-            }) 
-        print("Websocket Connected .....")
+        }) 
+        
 
 
     async def websocket_receive(self,event):
-        await self.send({
-            'type': 'websocket.send',
-            'text' : 'Client lay yo message Dekhxa'  
-        })
-        print("Message Received." , event['text'])
+        await self.channel_layer.group_send(
+            'pro' , 
+            {
+                'type' : 'chat.message' ,
+                'text' : event['text']
+            })
 
+    async def chat_message(self, event):
+        print("Event ..." , event)
+        await self.send({
+            'type' : 'websocket.send' ,
+            'text' : event['text']
+        })
+        
 
     async def websocket_disconnect(self,event):
+        print("Websocket DisConnected .....", event)
+        await self.channel_layer.group_discard(   #ko ko vagyo group bata vanera
+            'pro' , 
+            self.channel_name
+            )
+
         raise StopConsumer()
