@@ -9,24 +9,29 @@
 <body>
 
     <h1>VC -- HERE -- </h1>
-    <h2>COUNTER ID :</h2><h3 id='lau'></h3>
+    <textarea id="chat-log" cols="150" rows="20"></textarea><br>
+    <input type="text" id="chat-msg-input" size="160"><br><br>
+    <button type="submit" id="chat-msg-submit">SUBMIT</button>
 
 <script>
     var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/');
 
     ws.onopen = function(){
         console.log("Websocket Connected...")
-        ws.send("Lau tyo connect vo hai") 
     }
 
     //  ws.send vaneko Backend ma thow garxa
 
     ws.onmessage = function(event){
+        console.log(event.data)
         console.log(typeof (event.data))
-        console.log("Backend bata message aayo hai.." , event.data)
-        var naya = JSON.parse(event.data)
-        console.log(typeof (naya))
-        document.getElementById('lau').innerText = naya.count
+        const lya = JSON.parse(event.data)
+        document.getElementById("chat-log").value += (lya.msg + '\n')
+    //     console.log(typeof (event.data))
+    //     console.log("Backend bata message aayo hai.." , event.data)
+    //     var naya = JSON.parse(event.data)
+    //     console.log(typeof (naya))
+    //     document.getElementById('lau').innerText = naya.count
     }
 
     ws.onerror = function(event){
@@ -35,6 +40,15 @@
 
     ws.onclose = function(event){
         console.log("Websocket DisConnected..." , event)
+    }
+
+    document.getElementById('chat-msg-submit').onclick = function(event){
+        const msgayo =  document.getElementById('chat-msg-input')
+        const message = msgayo.value
+        ws.send(JSON.stringify({
+            'msg' : message
+        }))
+        msgayo.value = '';
     }
 
 

@@ -126,3 +126,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [('redis://:9YlekMhiokMxiE2KK3X9AMmdOQ1aDySn@redis-10977.c212.ap-south-1-1.ec2.cloud.redislabs.com:10977/0')],
+        },
+    },
+}
