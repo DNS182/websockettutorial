@@ -9,20 +9,24 @@
 <body>
 
     <h1>VC -- HERE -- </h1>
-    <h3 id='lau'></h3>
+    <h2>COUNTER ID :</h2><h3 id='lau'></h3>
 
 <script>
-    var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/')
+    var ws = new WebSocket('ws://127.0.0.1:8000/ws/sc/');
 
     ws.onopen = function(){
         console.log("Websocket Connected...")
-        ws.send("Lau tyo connect vo hai")
+        ws.send("Lau tyo connect vo hai") 
     }
 
-    ws.onmessage = function(event){
-        console.log("Backend bata message aayo hai.." , event)
-        document.getElementById('lau').innerText = event['data']
+    //  ws.send vaneko Backend ma thow garxa
 
+    ws.onmessage = function(event){
+        console.log(typeof (event.data))
+        console.log("Backend bata message aayo hai.." , event.data)
+        var naya = JSON.parse(event.data)
+        console.log(typeof (naya))
+        document.getElementById('lau').innerText = naya.count
     }
 
     ws.onerror = function(event){
