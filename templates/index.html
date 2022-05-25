@@ -1,20 +1,42 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'favicon.ico' %}">
+
     <title>Chat</title>
 </head>
 <body>
-
-    <h1>VC -- HERE -- </h1>
-    <textarea id="chat-log" cols="150" rows="20"></textarea><br>
+   
+    <h1>{{room | upper}}</h1> 
+    {% if user.is_authenticated %}
+    <textarea id="chat-log" cols="150" rows="20">
+        {% for chat in chats   %}
+        {{chat.chatmsg}}
+        {% endfor %}
+    </textarea><br>
+    {% else %}
+    <textarea id="chat-log" cols="150" rows="20">
+       LOG IN PLEASE
+    
+    </textarea><br>
+    {% endif %}
     <input type="text" id="chat-msg-input" size="160"><br><br>
     <button type="submit" id="chat-msg-submit">SUBMIT</button>
+    {{room | json_script:'room-name'}}
 
 <script>
-    var ws = new WebSocket('ws://127.0.0.1:8000/ws/ac/');
+
+    const groupName = JSON.parse(document.getElementById("room-name").textContent)
+    console.log(groupName)
+
+    // var ws = new WebSocket('ws://127.0.0.1:8000/ws/ac/');
+
+    var ws = new WebSocket('ws://' + window.location.host + '/ws/sc/' + groupName + '/')
+    console.log(ws)
 
     ws.onopen = function(){
         console.log("Websocket Connected...")
@@ -26,7 +48,9 @@
         console.log(event.data)
         console.log(typeof (event.data))
         const lya = JSON.parse(event.data)
-        document.getElementById("chat-log").value += (lya.msg + '\n')
+        console.log(lya)
+        document.getElementById("chat-log").value += ( lya.user + " : " + lya.msg + '\n') 
+        
     //     console.log(typeof (event.data))
     //     console.log("Backend bata message aayo hai.." , event.data)
     //     var naya = JSON.parse(event.data)
